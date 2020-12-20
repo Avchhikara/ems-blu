@@ -1,9 +1,10 @@
 import express from "express";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
-
+import http from 'http';
 import Routes from './routes';
 import mongodb from './mongodb'
+import { Socket } from "dgram";
 
 // Adding configurations to process.env
 dotenv.config();
@@ -11,15 +12,24 @@ dotenv.config();
 mongodb.doConnect();
 
 const app = express();
+const server = http.createServer(app);
+const io: Socket = require("socket.io")(server);
+
+io.on('connection', (socket) => {
+    console.log("User is connected");
+
+})
 
 // Adding middlewares
 app.use(bodyParser.json())
+// Adding a static directory
+app.use(express.static("static"))
 
 const PORT: string = process.env.PORT || "7890";
 
-new Routes(app);
+new Routes(app, io);
 
 // start the Express server
-app.listen(PORT, () => {
+server.listen(PORT, () => {
     console.log(`server started at http://localhost:${PORT}`);
 });
