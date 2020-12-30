@@ -2,7 +2,9 @@ const messages = document.querySelector(".messages");
 
 var socket = io();
 socket.on("update", (data) => {
-  showMessage(data.message);
+  console.log(data, "message" in data, "end" in data);
+  if (!("end" in data)) showMessage(data.message);
+  else showEnd(data.message);
 });
 
 let shadesSelector = 0;
@@ -35,25 +37,33 @@ const availableShades = [
 ];
 
 function showMessage(message) {
-    const msg = document.createElement("div");
-    msg.className = "message";
-    const timestamp = document.createElement("div");
-    timestamp.className = "message__timestamp";
-    msg.appendChild(timestamp);
-    const msge = document.createElement("div");
-    msge.className = "message__message";
-    msg.appendChild(msge);
-    // Addding timestamp values
-    timestamp.textContent = new Date().toLocaleString();
-    // Adding message values
-    msge.textContent = message;
-    // Adding the cool gradient
-    const shade = availableShades[shadesSelector % availableShades.length];
-    const bgColor = shade[0];
-    const bgGradient = shade[1];
-    msg.style.background = bgColor;
-    msg.style.background = bgGradient;
-    messages.appendChild(msg);
-    messages.scrollTop = messages.scrollHeight;
-    shadesSelector += 1;
+  const msg = document.createElement("div");
+  msg.className = "message";
+  const timestamp = document.createElement("div");
+  timestamp.className = "message__timestamp";
+  msg.appendChild(timestamp);
+  const msge = document.createElement("div");
+  msge.className = "message__message";
+  msg.appendChild(msge);
+  // Addding timestamp values
+  timestamp.textContent = new Date().toLocaleString();
+  // Adding message values
+  msge.textContent = message;
+  // Adding the cool gradient
+  const shade = availableShades[shadesSelector % availableShades.length];
+  const bgColor = shade[0];
+  const bgGradient = shade[1];
+  msg.style.background = bgColor;
+  msg.style.background = bgGradient;
+  messages.appendChild(msg);
+  messages.scrollTop = messages.scrollHeight;
+  shadesSelector += 1;
+}
+
+function showEnd(message = "Request Ended") {
+  const endDiv = document.createElement("div");
+  endDiv.textContent = message;
+  endDiv.className = "message__end-message";
+  messages.appendChild(endDiv);
+  messages.scrollTop = messages.scrollHeight;
 }

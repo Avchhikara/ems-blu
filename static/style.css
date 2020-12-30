@@ -1,5 +1,5 @@
 body {
-    background-color: whitesmoke;
+  background-color: whitesmoke;
 }
 
 .container {
@@ -38,4 +38,9 @@ body {
 }
 
 .message__message {
+}
+
+.message__end-message {
+  text-align: center;
+  font-size: smaller;
 }

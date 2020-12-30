@@ -6,6 +6,8 @@ import Routes from './routes';
 import mongodb from './mongodb'
 import { Socket } from "dgram";
 
+// Todo: Add feature for saving entry logs which can then be shown to the user
+
 // Adding configurations to process.env
 dotenv.config();
 // Connecting to mongodb

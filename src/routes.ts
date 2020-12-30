@@ -15,6 +15,11 @@ export default class Routes implements RoutesInterface {
         app.post("/search", async (req, res) => {
             const searchController = new SearchController(req, res, io);
             await searchController.run();
+            // Signaling end of search
+            io.emit("update", {
+                end: true,
+                message: "-----------no more message for above request-----------"
+            });
         })
         // Only used for testing
         app.post("/save", async (req, res) => {

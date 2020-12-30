@@ -1,6 +1,7 @@
 import Vehicle from './../../model/Vehicle';
 
 import { Response, Request } from "express";
+import VehicleSearchLog from "./../../model/VehicleSearchLog";
 import ControllerInterface from "./../../types/Controller";
 import VehicleSearch from '../../types/VehicleSearch';
 import VehicleType from '../../types/Vehicle';
@@ -42,7 +43,7 @@ export default class SearchController implements ControllerInterface {
                 }
                 this.res.status(200).json(out);
                 this.io.emit("update", {
-                    message: "Vehicle with no. " + vehicleSearch.registrationNumber + " is authorized so, sending the same response"
+                    message: "Vehicle with no. " + vehicleSearch.registrationNumber + " is authorized so, sending the same as response"
                 });
             }
             else {
@@ -51,7 +52,7 @@ export default class SearchController implements ControllerInterface {
                 }
                 this.res.status(401).json(out);
                 this.io.emit("update", {
-                    message: "Vehicle with no. " + vehicleSearch.registrationNumber + " is not authorized so, sending the same response"
+                    message: "Vehicle with no. " + vehicleSearch.registrationNumber + " is not authorized so, sending the same as response"
                 });
             }
         }
@@ -60,9 +61,18 @@ export default class SearchController implements ControllerInterface {
                 "message": "Please provide registrationNumber key in the body of POST request with proper value"
             });
             this.io.emit("update", {
-                message: "registrationNumber is not provided so, sending the same"
+                message: "registrationNumber is not provided so, sending the same as response"
             });
         }
+        // Saving logs
+        const log = new VehicleSearchLog({
+            possibleRegistrationNumber: vehicleSearch.registrationNumber
+        });
+        await log.save();
+        this.io.emit("update", {
+            message: "Search log for " + vehicleSearch.registrationNumber + " is saved."
+        });
+
         return true;
     }
 }
