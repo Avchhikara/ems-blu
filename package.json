@@ -5,8 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix & tsc",
-    "build": "node dist/server.js",
+    "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
+    "build": "tsc",
+    "start": "node dist/server.js",
     "compile": "tsc",
     "dev": "node dist/server.js",
     "compile:dev": "npm run compile & npm run dev"
