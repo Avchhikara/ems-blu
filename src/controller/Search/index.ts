@@ -24,6 +24,7 @@ export default class SearchController implements ControllerInterface {
         this.io.emit("update", {
             message: "Search request received for " + JSON.stringify(vehicleSearch)
         })
+        let isAuthorised = false;
         if (vehicleSearch.registrationNumber){
             this.io.emit("update", {
                 message: "Started searching for " + vehicleSearch.registrationNumber
@@ -36,6 +37,7 @@ export default class SearchController implements ControllerInterface {
                 __v: 0
             })
             if (vehicles.length === 1){
+                isAuthorised = true;
                 const vehicle: VehicleType = vehicles[0];
                 const out: VehicleSearchResponse = {
                     authorized: true,
@@ -65,13 +67,16 @@ export default class SearchController implements ControllerInterface {
             });
         }
         // Saving logs
-        const log = new VehicleSearchLog({
-            possibleRegistrationNumber: vehicleSearch.registrationNumber
-        });
-        await log.save();
-        this.io.emit("update", {
-            message: "Search log for " + vehicleSearch.registrationNumber + " is saved."
-        });
+        if(isAuthorised) {
+            const log = new VehicleSearchLog({
+                possibleRegistrationNumber: vehicleSearch.registrationNumber
+            });
+            await log.save();
+            this.io.emit("update", {
+                message: "Search log for " + vehicleSearch.registrationNumber + " is saved."
+            });
+        }
+        
 
         return true;
     }
